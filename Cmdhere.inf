@@ -1,0 +1,36 @@
+[Version]
+Signature=$CHICAGO$
+[DefaultInstall]
+AddReg=Reg.Settings
+AddReg=Reg.Uninstall
+CopyFiles=Inf.Copy
+[DefaultUninstall]
+DelReg=Reg.Settings
+DelReg=Reg.Uninstall
+DelFiles=Inf.Copy
+[Reg.Settings]
+HKCR,Directory\Shell\Cmdhere
+HKCR,Directory\Shell\Cmdhere,,,"%MENUITEM%"
+HKCR,Directory\Shell\Cmdhere\command,,,"%11%\cmd.exe /f:on /k cd ""%1"""
+HKCR,Drive\Shell\Cmdhere
+HKCR,Drive\Shell\Cmdhere,,,"%MENUITEM%"
+HKCR,Drive\Shell\Cmdhere\command,,,"%11%\cmd.exe /f:on /k cd ""%1"""
+[Reg.Uninstall]
+HKLM,Software\Microsoft\Windows\CurrentVersion\Uninstall\%NAME%
+HKLM,Software\Microsoft\Windows\CurrentVersion\Uninstall\%NAME%,DisplayName\
+,,"%NAME%"
+HKLM,Software\Microsoft\Windows\CurrentVersion\Uninstall\%NAME%,UninstallString\
+,,"Rundll32.exe setupapi,InstallHinfSection DefaultUninstall 132 "\
+"%17%\Cmdhere.inf"
+[Inf.Copy]
+Cmdhere.inf
+[DestinationDirs]
+Inf.Copy=17
+[SourceDisksNames]
+55=%DISKNAME%
+[SourceDisksFiles]
+Cmdhere.inf=55
+[Strings]
+NAME     = "Yuan's CMD Prompt Here"
+MENUITEM = "CMD &Prompt Here"
+DISKNAME = "Setup Files"
