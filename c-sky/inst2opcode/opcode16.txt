@@ -1,0 +1,100 @@
+ addc  rz, rx 
+	111000RZRX01
+ addi  rz, oimm5 
+	101000RZIMM50
+ addu  rz, rx 
+	111000RZRX00
+ and  rz, rx 
+	111010RZRX00
+ andn  rz, rx 
+	111010RZRX01
+ asr  rz, rx 
+	111100RZRX10
+ asri  rz, imm5 
+	101100RZIMM50
+ bclri  rz, imm5 
+	101101RZIMM50
+ bf  label 
+	100011Offset
+ br  label 
+	100000Offset
+ bseti  rz, imm5 
+	101101RZIMM51
+ bsr  label 
+	100001Offset
+ bt  label 
+	100010Offset
+ cmphs  ry, rx 
+	111001RYRX00
+ cmphsi  ry, oimm5 
+	101001RYIMM50
+ cmplt  ry, rx 
+	111001RYRX01
+ cmplti  ry, oimm5 
+	101001RYIMM51
+ cmpne  ry, rx 
+	111001RYRX10
+ cmpnei  ry, imm5 
+	101010RYIMM50
+ jmplr 
+	1111110000000000
+ jsri  label 
+	100100Offset
+ ld.b  rz, (rx, offset) 
+	110000RZRXOffset
+ ld.h  rz, (rx, offset) 
+	110001RZRXOffset
+ ld.w  rz, (rx, offset) 
+	110010RZRXOffset
+ ldm  ry-rz, rx 
+	110111RZRXIMM2
+ lsl  rz, rx 
+	111100RZRX00
+ lsli  rz, imm5 
+	101011RZIMM50
+ lsr  rz, rx 
+	111100RZRX01
+ lsri  rz, imm5 
+	101011RZIMM51
+ mov  rz, rx 
+	100111RZRXZX
+ movi  rz, imm5 
+	101110RZIMM50
+ mulsh  rz, rx 
+	111111RZRX00
+ mult  rz, rx 
+	111111RZRX01
+ mvc  rz 
+	111110RZ000000
+ nor  rz, rx 
+	111011RZRX10
+ or  rz, rx 
+	111011RZRX00
+ revb  rz, rx 
+	111110RZRX11
+ rotl  rz, rx 
+	111100RZRX11
+ rotli  rz, imm5 
+	101100RZIMM51
+ sextb  rz, rx 
+	111101RZRX11
+ st.b  rz, (rx, offset) 
+	110100RZRXOffset
+ st.h  rz, (rx, offset) 
+	110101RZRXOffset
+ st.w  rz, (rx, offset) 
+	110110RZRXOffset
+ subc  rz, rx 
+	111000RZRX11
+ subi  rz, oimm5 
+	101000RZIMM51
+ subu  rz, rx 
+	111000RZRX10
+ tst  rx, ry 
+	111010RYRX10
+ tstnbz  rx 
+	1110100000RX11
+ xor  rz, rx 
+	111011RZRX01
+ zextb  rz, rx 
+	111101RZRX01

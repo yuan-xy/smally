@@ -1,0 +1,298 @@
+ abs  rz, rx 
+	010001RZRX0000001000000000
+ addc  rz, rx, ry 
+	010001RZRX00000000010RY
+ addi  rz, rx, oimm16 
+	001000RZRXIMM16
+ addu  rz, rx, ry 
+	010001RZRX00000000001RY
+ andi  rz, rx, imm16 
+	001010RZRXIMM16
+ andn  rz, rx, ry 
+	010001RZRX00100000010RY
+ andni  rz, rx, imm16 
+	001011RZRXIMM16
+ asr  rz, rx, ry 
+	010001RZRX01000000100RY
+ asrc  rz, rx, oimm5 
+	010001RZRX01001100100IMM5
+ asri  rz, rx, imm5 
+	010001RZRX01001000100IMM5
+ bclri  rz, rx, imm5 
+	010001RZRX0010100000100000
+ be  rx, ry, label 
+	000010RYRXIMM16
+ bez  rx, label 
+	00010000000RXOffset
+ bf  label 
+	0001001000000000Offset
+ bgeni  rz, imm5 
+	00011100001RZ£¨2£©IMM5
+ bgenr  rz, rx 
+	010001RZRX0010101000000000
+ bhsz  rx, label 
+	00010000101RXOffset
+ bhz  rx, label 
+	00010000010RXOffset
+ bkpt 
+	01000000000000000000000000100000
+ blsz  rx, label 
+	00010000011RXOffset
+ blz  rx, label 
+	00010000100RXOffset
+ bmaski  rz, imm5 
+	010001RZ0000000101001000IMM5
+ bne  rx, ry, label 
+	000011RYRXOffset
+ bnez  rx, label 
+	00010000001RXOffset
+ br  label 
+	000000Offset
+ brev  rz, rx 
+	010001RZRX0110001000000000
+ bseti  rz, rx, imm5 
+	010001RZRX00101000010IMM5
+ bsr  label 
+	000001Offset
+ bt  label 
+	0001001000100000Offset
+ btsti  rx, imm5 
+	01000100000RX00101000100IMM5
+ clrt  rz 
+	010001RZ000000010110001000000
+ cmphs  rx, ry 
+	01000100000RX00000100001RY
+ cmphsi  rx, oimm16 
+	00011110000RXIMM16
+ cmplt  rx, ry 
+	01000100000RX00000100010RY
+ cmplti  rx, oimm16 
+	00011110001RXIMM16
+ cmpne  rx, ry 
+	01000100000RX00000100100RY
+ cmpnei  rx, imm16 
+	00011110010RXIMM16
+ cpop  <cpid, func> 
+	011000User-define
+ cprc  <cpid, func> 
+	0110011000000000User-define
+ cprcr  rz, <cpid, func> 
+	01100100010RZUser-define
+ cprgr  rz, <cpid, func> 
+	01100100000RZUser-define
+ cpwcr  rx, <cpid, func> 
+	01100100001RXUser-define
+ cpwgr  rx, <cpid, func> 
+	01100100011RXUser-define
+ decf  rz, rx, imm5 
+	010001RZRX00001100100IMM5
+ decgt  rz, rx, imm5 
+	010001RZRX00010000001IMM5
+ declt  rz, rx, imm5 
+	010001RZRX00010000010IMM5
+ decne  rz, rx, imm5 
+	010001RZRX00010000100IMM5
+ dect  rz, rx, imm5 
+	010001RZRX00001101000IMM5
+ divs  rz, rx, ry 
+	010001RZRX10000000010RY
+ divu  rz, rx, ry 
+	010001RZRX10000000001RY
+ doze 
+	01000000000000000101000000100000
+ ff1  rz, rx 
+	010001RZRX0111110001000000
+ incf  rz, rx, imm5 
+	010001RZRX00001100001IMM5
+ inct  rz, rx, imm5 
+	010001RZRX00001100010IMM5
+ ins  rz, rx, msb, lsb 
+	010001RZRX010111MSBSIZE
+ ixh  rz, rx,ry 
+	010001RZRX00001000001RY
+ ixw  rz, rx, ry 
+	010001RZRX00001000010RY
+ jmp  rx 
+	01000000000RX1000000000100000
+ jmpi  label 
+	0001001100000000Offset
+ jmplr 
+	01000000000111111000000000100000
+ jsr  rx 
+	01000000000RX1000010000100000
+ jsri  label 
+	0001001100100000Offset
+ ld.b  rz, (rx, offset) 
+	010110RZRX0000Offset
+ ld.bs  rz, (rx, offset) 
+	010110RZRX0100Offset
+ ld.h  rz, (rx, offset) 
+	010110RZRX0001Offset
+ ld.hs  rz, (rx, offset) 
+	010110RZRX0101Offset
+ ld.w  rz, (rx, offset) 
+	010110RZRX0010Offset
+ ldcpr  <cpid, cprz>, (rx, offset) 
+	011010CPRZRX0000User-define
+ ldex.w  rz, (rx, offset) 
+	010110RZRX0111Offset
+ ldm  ry-rz, (rx) 
+	010100RZRX00011100001IMM5
+ ldq  r4-r7, (rx) 
+	01010000100RX0001110000100011
+ ldr.b  rz, (rx, ry << #0) 
+	010100RZRX00000001000RY
+ ldr.bs  rz, (rx, ry << #0) 
+	010100RZRX00010001000RY
+ ldr.h  rz,(rx, ry << #0) 
+	010100RZRX00000101000RY
+ ldr.hs  rz, (rx, ry << #0) 
+	010100RZRX00010101000RY
+ ldr.w  rz, (rx, ry << #0) 
+	010100RZRX00001001000RY
+ lsl  rz, rx, ry 
+	010001RZRX01000000001RY
+ lslc  rz, rx, oimm5 
+	010001RZRX01001100001IMM5
+ lsli  rz, rx, imm5 
+	010001RZRX01001000001IMM5
+ lsr  rz, rx, ry 
+	010001RZRX01000000010RY
+ lsrc  rz, rx, oimm5 
+	010001RZRX01001100010IMM5
+ lsri  rz, rx, imm5 
+	010001RZRX01001000010IMM5
+ mfcr  rz, cr<x, sel> 
+	010000RZCRX01100000001sel
+ mfhi  rz 
+	010001RZ000001001110000100000
+ mflo  rz 
+	010001RZ000001001110010000000
+ mov  rz, rx 
+	010001RZRX0100100000100000
+ movf  rz, rx 
+	010001RZRX0000110000100000
+ movi  rz, imm16 
+	00011100000RZIMM16
+ movih  rz, imm16 
+	00011100001RZIMM16
+ movt  rz, rx 
+	010001RZRX0000110001000000
+ mtcr  rx, cr<z, sel> 
+	010000CRZRX01100100001sel
+ mthi  rx 
+	01000100000RX1001110001000000
+ mtlo  rx 
+	01000100000RX1001110100000000
+ muls  rx, ry 
+	01000100000RX10001100001RY
+ mulsa  rx, ry 
+	01000100000RX10001100010RY
+ mulsh  rz, rx, ry 
+	010001RZRX10000100010RY
+ mulss  rx, ry 
+	01000100000RX10001100100RY
+ mult  rz, rx, ry 
+	010001RZRX10000100001RY
+ mulu  rx, ry 
+	01000100000RX10001000001RY
+ mulua  rx, ry 
+	01000100000RX10001000010RY
+ mulus  rx, ry 
+	01000100000RX10001000100RY
+ mvc  rz 
+	010001RZ000000110000000100000
+ mvcv  rz 
+	010001RZ000000111110000100000
+ nor  rz, rx, ry 
+	010001RZRX00100100100RY
+ not  rz, rx 
+	010001RZRX00100100100RX
+ or  rz, rx, ry 
+	010001RZRX00100100001RY
+ ori  rz, rx, imm16 
+	001100RZRXOffset
+ pldr  (rx, offset) 
+	00011111000RXOffset
+ pldw  (rx, offset) 
+	00011111001RXOffset
+ psrclr  #imm5 
+	010000000000000001110000001IMM5
+ psrset  #imm5 
+	010000000000000001110100001IMM5
+ revb  rz, rx 
+	010001000000000001100001000IMM5
+ rfi 
+	01000000000000000100010000100000
+ rotl  rz, rx, ry 
+	010001RZRX01000001000RY
+ rotli  rz, rx, imm5 
+	010001RZRX01001001000IMM5
+ rsub  rz, rx, ry 
+	010001RZRY00000000100RX
+ rte 
+	01000000000000000100000000100000
+ se 
+	01000000000000000101100000100000
+ sext  rz, rx, msb, lsb 
+	010001RZRX010110MSBLSB
+ sextb  rz, rx 
+	010001RZRX0101100111100000
+ st.b  rz, (rx, offset) 
+	010111RZRX0000Offset
+ st.h  rz, (rx, offset) 
+	010111RZRX0001Offset
+ st.w  rz, (rx, offset) 
+	010111RZRX0010Offset
+ stcpr  <cpid, cprz>, (rx, offset) 
+	010110CPRZRX1000User-define
+ stex.w  rz, (rx, offset) 
+	010111RZRX0111Offset
+ stm  ry-rz, (rx) 
+	010101RZRX00011100001IMM5
+ stop 
+	01000000000000000100100000100000
+ stq  r4-r7, (rx) 
+	01010100100RX0001110000100011
+ str.b  rz, (rx, ry << #0) 
+	010101RZRX00000001000RY
+ str.h  rz, (rx, ry << #0) 
+	010101RZRX00000101000RY
+ str.w  rz, (rx, ry << #0) 
+	010101RZRX00001001000RY
+ subc  rz, rx, ry 
+	010001RZRX00000001000RY
+ subi  rz, rx, oimm16 
+	001001RZRXIMM16
+ subu  rz, rx, ry 
+	010001RZRX00000000100RY
+ sync 
+	01000000000000000000010000100000
+ trap  #0 
+	01000000000000000010110000100000
+ tst  rx, ry 
+	01000100000RX00100000100RY
+ tstnbz  rx 
+	01000100000RX001000
+ wait 
+	01000000000000000100110000100000
+ we 
+	01000000000000000101010000100000
+ xor  rz, rx, ry 
+	010001RZRX00100100010RY
+ xori  rz, rx, imm16 
+	001101RZRXIMM16
+ xsr  rz, rx, oimm5 
+	010001RZRX01001101000IMM5
+ xtrb0  rz, rx 
+	010001RZRX0111000000100000
+ xtrb1  rz, rx 
+	010001RZRX0111000001000000
+ xtrb2  rz, rx 
+	010001RZRX0111000010000000
+ xtrb3  rz, rx 
+	010001RZRX0111000100000000
+ zext  rz, rx, msb, lsb 
+	010001RZRX010101MSBLSB
+ zextb  rz, rx 
+	010001RZRX0101010111100000
