@@ -1,10 +1,5 @@
 def trim(s)
- ret =s
- ret = ret.gsub("\n","")
- ret = ret.gsub("\r","")
- ret = ret.gsub("\t","")
- ret = ret.gsub(" ","")
- ret
+  s.gsub(/[\W]+/,"")
 end
 
 opcodes={}
@@ -35,8 +30,6 @@ File.open("inst.txt").each_line do |x|
 end
 
 File.open("opcode32.txt","w") do |f|
-opcodes.sort.each {|x| 
-f << x[0]+"\t" + x[1] +"\r\n"
-}
+  opcodes.sort.each {|x| f << x[0]+"\t" + x[1] +"\r\n"}
 end
 
