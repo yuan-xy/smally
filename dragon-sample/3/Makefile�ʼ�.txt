@@ -1,0 +1,22 @@
+a b : c d
+就等价于
+a : c d
+b : c d
+
+
+自动变量
+$@ 目标文件
+$< 依赖的第一个文件
+$^ 依赖的所有文件
+
+gmake -n 调试
+gmake -j2 表示用两个进程同时工作
+gmake -f  指定makefile文件的位置
+gcc 在命令行加上参数 -MM ，即可生成 GNU Make 格式的依赖关系文本（包括直接和间接的关系）
+
+.PHONY: clean  #指示clean不是文件目标，是一个特殊目标
+clean :
+    -del foo.obj bar.obj foobar.exe #-表示忽略错误
+
+
+make SHELL='/bin/sh -x' 强制make显示出它执行的每一个命令
