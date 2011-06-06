@@ -1,0 +1,7 @@
+Thumbs.db
+database.yml
+db/schema.rb
+db/migrate/*_create_sessions.rb
+# git update-index --assume-unchanged /home/dooo/bodu_server/config/environment.rb
+*.log
+*.bak
