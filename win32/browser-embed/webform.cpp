@@ -200,7 +200,8 @@ struct TWebf: public IUnknown {
 		// IOleInPlaceFrame
 		HRESULT STDMETHODCALLTYPE InsertMenus(HMENU hmenuShared,
 				LPOLEMENUGROUPWIDTHS lpMenuWidths) {
-			return E_NOTIMPL;
+			MessageBoxW(webf->hhost, L"menu", L"Title:", MB_OK);
+			return S_OK;
 		}
 		HRESULT STDMETHODCALLTYPE SetMenu(HMENU hmenuShared, HOLEMENU holemenu,
 				HWND hwndActiveObject) {
@@ -357,7 +358,6 @@ struct TWebf: public IUnknown {
 		HRESULT STDMETHODCALLTYPE ShowMessage(HWND hwnd, LPOLESTR lpstrText,
 				LPOLESTR lpstrCaption, DWORD dwType, LPOLESTR lpstrHelpFile,
 				DWORD dwHelpContext, LRESULT *plResult) {
-			*plResult = IDCANCEL;
 			return S_OK;
 		}
 		HRESULT STDMETHODCALLTYPE ShowHelp(HWND hwnd, LPOLESTR pszHelpFile,
