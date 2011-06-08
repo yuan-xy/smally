@@ -5,3 +5,14 @@ db/migrate/*_create_sessions.rb
 # git update-index --assume-unchanged /home/dooo/bodu_server/config/environment.rb
 *.log
 *.bak
+*.exe
+*.dll
+*.obj
+*.ilk
+*.pdb
+*.exp
+*.sln
+*.suo
+*.vcproj*
+*.ncb
+*.lib

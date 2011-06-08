@@ -522,34 +522,16 @@ HRESULT STDMETHODCALLTYPE Frame_TranslateAccelerator(IOleInPlaceFrame FAR* This,
 }
 
 
-/*************************** UnEmbedBrowserObject() ************************
- * Called to detach the browser object from our host window, and free its
- * resources, right before we destroy our window.
- *
- * hwnd =		Handle to the window hosting the browser object.
- *
- * NOTE: The pointer to the browser object must have been stored in the
- * window's USERDATA field. In other words, don't call UnEmbedBrowserObject().
- * with a HWND that wasn't successfully passed to EmbedBrowserObject().
- */
-
 void UnEmbedBrowserObject(HWND hwnd){
 	IOleObject	**browserHandle;
 	IOleObject	*browserObject;
-
-	// Retrieve the browser object's pointer we stored in our window's GWL_USERDATA when
-	// we initially attached the browser object to this window.
-	if ((browserHandle = (IOleObject **)GetWindowLong(hwnd, GWL_USERDATA)))
-	{
-		// Unembed the browser object, and release its resources.
+	if ((browserHandle = (IOleObject **)GetWindowLong(hwnd, GWL_USERDATA))){
 		browserObject = *browserHandle;
 		browserObject->lpVtbl->Close(browserObject, OLECLOSE_NOSAVE);
 		browserObject->lpVtbl->Release(browserObject);
 		GlobalFree(browserHandle);
 		return;
 	}
-	// You must have called this for a window that wasn't successfully passed to EmbedBrowserObject().
-	// Bad boy!
 	_ASSERT(0);
 }
 
@@ -565,11 +547,6 @@ void UnEmbedBrowserObject(HWND hwnd){
  *				(NOTE: No <BODY></BODY> tags are required in the string).
  *
  * RETURNS: 0 if success, or non-zero if an error.
- *
- * NOTE: EmbedBrowserObject() must have been successfully called once with the
- * specified window, prior to calling this function. You need call
- * EmbedBrowserObject() once only, and then you can make multiple calls to
- * this function to display numerous pages in the specified window.
  */
 
 long DisplayHTMLStr(HWND hwnd, LPCTSTR string)
@@ -583,50 +560,18 @@ long DisplayHTMLStr(HWND hwnd, LPCTSTR string)
 	VARIANT			*pVar;
 	BSTR			bstr;
 
-	// Retrieve the browser object's pointer we stored in our window's GWL_USERDATA when
-	// we initially attached the browser object to this window.
 	browserObject = *((IOleObject **)GetWindowLong(hwnd, GWL_USERDATA));
-
-	// Assume an error.
 	bstr = 0;
-
-	// We want to get the base address (ie, a pointer) to the IWebBrowser2 object embedded within the browser
-	// object, so we can call some of the functions in the former's table.
-	if (!browserObject->lpVtbl->QueryInterface(browserObject, &IID_IWebBrowser2, (void**)&webBrowser2))
-	{
-		// Ok, now the pointer to our IWebBrowser2 object is in 'webBrowser2', and so its VTable is
-		// webBrowser2->lpVtbl.
-
-		// Before we can get_Document(), we actually need to have some HTML page loaded in the browser. So,
-		// let's load an empty HTML page. Then, once we have that empty page, we can get_Document() and
-		// write() to stuff our HTML string into it.
+	if (!browserObject->lpVtbl->QueryInterface(browserObject, &IID_IWebBrowser2, (void**)&webBrowser2)){
 		VariantInit(&myURL);
 		myURL.vt = VT_BSTR;
 		myURL.bstrVal = SysAllocString(L"about:blank");
-
-		// Call the Navigate2() function to actually display the page.
 		webBrowser2->lpVtbl->Navigate2(webBrowser2, &myURL, 0, 0, 0, 0);
-
-		// Free any resources (including the BSTR).
 		VariantClear(&myURL);
-
-		// Call the IWebBrowser2 object's get_Document so we can get its DISPATCH object. I don't know why you
-		// don't get the DISPATCH object via the browser object's QueryInterface(), but you don't.
-		if (!webBrowser2->lpVtbl->get_Document(webBrowser2, &lpDispatch))
-		{
-			// We want to get a pointer to the IHTMLDocument2 object embedded within the DISPATCH
-			// object, so we can call some of the functions in the former's table.
-			if (!lpDispatch->lpVtbl->QueryInterface(lpDispatch, &IID_IHTMLDocument2, (void**)&htmlDoc2))
-			{
-				// Ok, now the pointer to our IHTMLDocument2 object is in 'htmlDoc2', and so its VTable is
-				// htmlDoc2->lpVtbl.
-
-				// Our HTML must be in the form of a BSTR. And it must be passed to write() in an
-				// array of "VARIENT" structs. So let's create all that.
-				if ((sfArray = SafeArrayCreate(VT_VARIANT, 1, (SAFEARRAYBOUND *)&ArrayBound)))
-				{
-					if (!SafeArrayAccessData(sfArray, (void**)&pVar))
-					{
+		if (!webBrowser2->lpVtbl->get_Document(webBrowser2, &lpDispatch)){
+			if (!lpDispatch->lpVtbl->QueryInterface(lpDispatch, &IID_IHTMLDocument2, (void**)&htmlDoc2)){
+				if ((sfArray = SafeArrayCreate(VT_VARIANT, 1, (SAFEARRAYBOUND *)&ArrayBound))){
+					if (!SafeArrayAccessData(sfArray, (void**)&pVar)){
 						pVar->vt = VT_BSTR;
 #ifndef UNICODE
 						{
@@ -642,9 +587,7 @@ long DisplayHTMLStr(HWND hwnd, LPCTSTR string)
 #else
 						bstr = SysAllocString(string);
 #endif
-						// Store our BSTR pointer in the VARIENT.
-						if ((pVar->bstrVal = bstr))
-						{
+						if ((pVar->bstrVal = bstr)){
 							// Pass the VARIENT with its BSTR to write() in order to shove our desired HTML string
 							// into the body of that empty page we created above.
 							htmlDoc2->lpVtbl->write(htmlDoc2, sfArray);
@@ -658,76 +601,24 @@ long DisplayHTMLStr(HWND hwnd, LPCTSTR string)
 					// and even frees the BSTR we allocated with SysAllocString
 					SafeArrayDestroy(sfArray);
 				}
-
-				// Release the IHTMLDocument2 object.
 bad:			htmlDoc2->lpVtbl->Release(htmlDoc2);
 			}
-
-			// Release the DISPATCH object.
 			lpDispatch->lpVtbl->Release(lpDispatch);
 		}
-
-		// Release the IWebBrowser2 object.
 		webBrowser2->lpVtbl->Release(webBrowser2);
 	}
-
-	// No error?
 	if (bstr) return(0);
-
-	// An error
 	return(-1);
 }
 
 
-/******************************* DisplayHTMLPage() ****************************
- * Displays a URL, or HTML file on disk.
- *
- * hwnd =		Handle to the window hosting the browser object.
- * webPageName =	Pointer to nul-terminated name of the URL/file.
- *
- * RETURNS: 0 if success, or non-zero if an error.
- *
- * NOTE: EmbedBrowserObject() must have been successfully called once with the
- * specified window, prior to calling this function. You need call
- * EmbedBrowserObject() once only, and then you can make multiple calls to
- * this function to display numerous pages in the specified window.
- */
-
-long DisplayHTMLPage(HWND hwnd, LPTSTR webPageName)
-{
+long DisplayHTMLPage(HWND hwnd, LPTSTR webPageName){
 	IWebBrowser2	*webBrowser2;
 	VARIANT			myURL;
-	IOleObject		*browserObject;
-
-	// Retrieve the browser object's pointer we stored in our window's GWL_USERDATA when
-	// we initially attached the browser object to this window.
-	browserObject = *((IOleObject **)GetWindowLong(hwnd, GWL_USERDATA));
-
-	// We want to get the base address (ie, a pointer) to the IWebBrowser2 object embedded within the browser
-	// object, so we can call some of the functions in the former's table.
-	if (!browserObject->lpVtbl->QueryInterface(browserObject, &IID_IWebBrowser2, (void**)&webBrowser2))
-	{
-		// Ok, now the pointer to our IWebBrowser2 object is in 'webBrowser2', and so its VTable is
-		// webBrowser2->lpVtbl.
-
-		// Our URL (ie, web address, such as "http://www.microsoft.com" or an HTM filename on disk
-		// such as "c:\myfile.htm") must be passed to the IWebBrowser2's Navigate2() function as a BSTR.
-		// A BSTR is like a pascal version of a double-byte character string. In other words, the
-		// first unsigned short is a count of how many characters are in the string, and then this
-		// is followed by those characters, each expressed as an unsigned short (rather than a
-		// char). The string is not nul-terminated. The OS function SysAllocString can allocate and
-		// copy a UNICODE C string to a BSTR. Of course, we'll need to free that BSTR after we're done
-		// with it. If we're not using UNICODE, we first have to convert to a UNICODE string.
-		//
-		// What's more, our BSTR needs to be stuffed into a VARIENT struct, and that VARIENT struct is
-		// then passed to Navigate2(). Why? The VARIENT struct makes it possible to define generic
-		// 'datatypes' that can be used with all languages. Not all languages support things like
-		// nul-terminated C strings. So, by using a VARIENT, whose first field tells what sort of
-		// data (ie, string, float, etc) is in the VARIENT, COM interfaces can be used by just about
-		// any language.
+	IOleObject		*browserObject = *((IOleObject **)GetWindowLong(hwnd, GWL_USERDATA));
+	if (!browserObject->lpVtbl->QueryInterface(browserObject, &IID_IWebBrowser2, (void**)&webBrowser2)){
 		VariantInit(&myURL);
 		myURL.vt = VT_BSTR;
-
 #ifndef UNICODE
 		{
 		wchar_t		*buffer;
@@ -747,38 +638,14 @@ long DisplayHTMLPage(HWND hwnd, LPTSTR webPageName)
 badalloc:	webBrowser2->lpVtbl->Release(webBrowser2);
 			return(-6);
 		}
-
-		// Call the Navigate2() function to actually display the page.
 		webBrowser2->lpVtbl->Navigate2(webBrowser2, &myURL, 0, 0, 0, 0);
-
-		// Free any resources (including the BSTR we allocated above).
 		VariantClear(&myURL);
-
-		// We no longer need the IWebBrowser2 object (ie, we don't plan to call any more functions in it,
-		// so we can release our hold on it). Note that we'll still maintain our hold on the browser
-		// object.
 		webBrowser2->lpVtbl->Release(webBrowser2);
-
-		// Success
 		return(0);
 	}
-
 	return(-5);
 }
 
-
-
-
-
-/***************************** EmbedBrowserObject() **************************
- * Puts the browser object inside our host window, and save a pointer to this
- * window's browser object in the window's GWL_USERDATA field.
- *
- * hwnd =		Handle of our window into which we embed the browser object.
- *
- * RETURNS: 0 if success, or non-zero if an error.
- *
- */
 
 long EmbedBrowserObject(HWND hwnd){
 	IOleObject			*browserObject;
@@ -803,13 +670,11 @@ long EmbedBrowserObject(HWND hwnd){
 	if (!OleCreate(&CLSID_WebBrowser, &IID_IOleObject, OLERENDER_DRAW, 0, (IOleClientSite *)_iOleClientSiteEx, &MyIStorage, (void**)&browserObject)){
 		*((IOleObject **)ptr) = browserObject;
 		SetWindowLong(hwnd, GWL_USERDATA, (LONG)ptr);
-
 		// browserObject->SetHostNames(L"My Host Name", 0);
 		browserObject->lpVtbl->SetHostNames(browserObject, L"My Host Name", 0);
-
 		GetClientRect(hwnd, &rect);
 		if (!OleSetContainedObject((struct IUnknown *)browserObject, TRUE) &&
-			!browserObject->lpVtbl->DoVerb(browserObject, OLEIVERB_SHOW, NULL, (IOleClientSite *)_iOleClientSiteEx, -1, hwnd, &rect) &&
+			!browserObject->lpVtbl->DoVerb(browserObject, OLEIVERB_SHOW, NULL, (IOleClientSite *)_iOleClientSiteEx, 0, hwnd, &rect) &&
 			!browserObject->lpVtbl->QueryInterface(browserObject, &IID_IWebBrowser2, (void**)&webBrowser2))
 		{
 			webBrowser2->lpVtbl->put_Left(webBrowser2, 0);
@@ -819,12 +684,9 @@ long EmbedBrowserObject(HWND hwnd){
 			webBrowser2->lpVtbl->Release(webBrowser2);
 			return(0);
 		}
-
-		// Something went wrong!
 		UnEmbedBrowserObject(hwnd);
 		return(-3);
 	}
-
 	GlobalFree(ptr);
 	return(-2);
 }
@@ -841,11 +703,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 		if (!WindowCount) PostQuitMessage(0);
 		return(TRUE);
 	}
-
-	// NOTE: If you want to resize the area that the browser object occupies when you
-	// resize the window, then handle WM_SIZE and use the IWebBrowser2's put_Width()
-	// and put_Height() to give it the new dimensions.
-
+	if (uMsg == WM_SIZE){
+		IOleObject	**browserHandle;
+		IOleObject	*browserObject;
+		IWebBrowser2		*webBrowser2;
+		browserHandle = (IOleObject **)GetWindowLong(hwnd, GWL_USERDATA);
+		browserObject = *browserHandle;
+		browserObject->lpVtbl->QueryInterface(browserObject, &IID_IWebBrowser2, (void**)&webBrowser2);
+		webBrowser2->lpVtbl->put_Width(webBrowser2, LOWORD(lParam));
+		webBrowser2->lpVtbl->put_Height(webBrowser2, HIWORD(lParam));
+		webBrowser2->lpVtbl->Release(webBrowser2);
+	}
 	return(DefWindowProc(hwnd, uMsg, wParam, lParam));
 }
 
@@ -868,7 +736,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hInstNULL, LPSTR lpszCmdLine
 						HWND_DESKTOP, NULL, hInstance, 0)))
 		{
 			// For this window, display a URL. This could also be a HTML file on disk such as "c:\\myfile.htm".
-			DisplayHTMLPage(msg.hwnd, "http://www.google.com");
+			DisplayHTMLPage(msg.hwnd, "E:\\firebreath-1.4\\projects\\PluginGigaso\\search.htm");
 
 			// Show the window.
 			ShowWindow(msg.hwnd, nCmdShow);
