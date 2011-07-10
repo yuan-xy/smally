@@ -691,6 +691,34 @@ long EmbedBrowserObject(HWND hwnd){
 	return(-2);
 }
 
+void ResizeBrowser(HWND hwnd, DWORD width, DWORD height)
+{
+	IWebBrowser2	*webBrowser2;
+	IOleObject		*browserObject;
+
+	// Retrieve the browser object's pointer we stored in our window's GWL_USERDATA when
+	// we initially attached the browser object to this window.
+	browserObject = *((IOleObject **)GetWindowLong(hwnd, GWL_USERDATA));
+
+	// We want to get the base address (ie, a pointer) to the IWebBrowser2 object embedded within the browser
+	// object, so we can call some of the functions in the former's table.
+	if (!browserObject->lpVtbl->QueryInterface(browserObject, &IID_IWebBrowser2, (void**)&webBrowser2))
+	{
+		// Ok, now the pointer to our IWebBrowser2 object is in 'webBrowser2', and so its VTable is
+		// webBrowser2->lpVtbl.
+
+		// Call are put_Width() and put_Height() to set the new width/height.
+		webBrowser2->lpVtbl->put_Width(webBrowser2, width);
+		webBrowser2->lpVtbl->put_Height(webBrowser2, height);
+
+		// We no longer need the IWebBrowser2 object (ie, we don't plan to call any more functions in it,
+		// so we can release our hold on it). Note that we'll still maintain our hold on the browser
+		// object.
+		webBrowser2->lpVtbl->Release(webBrowser2);
+	}
+}
+
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 	if (uMsg == WM_CREATE){
 		if (EmbedBrowserObject(hwnd)) return(-1);
@@ -713,6 +741,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 		webBrowser2->lpVtbl->put_Width(webBrowser2, LOWORD(lParam));
 		webBrowser2->lpVtbl->put_Height(webBrowser2, HIWORD(lParam));
 		webBrowser2->lpVtbl->Release(webBrowser2);
+			ResizeBrowser(hwnd, LOWORD(lParam), HIWORD(lParam));
+			return(0);
 	}
 	return(DefWindowProc(hwnd, uMsg, wParam, lParam));
 }
