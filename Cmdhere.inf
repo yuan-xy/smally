@@ -11,10 +11,10 @@ DelFiles=Inf.Copy
 [Reg.Settings]
 HKCR,Directory\Shell\Cmdhere
 HKCR,Directory\Shell\Cmdhere,,,"%MENUITEM%"
-HKCR,Directory\Shell\Cmdhere\command,,,"%11%\cmd.exe /f:on /k cd ""%1"""
+HKCR,Directory\Shell\Cmdhere\command,,,"%11%\cmd.exe /f:on /k "C:\PROGRA~1\MICROS~1.0\VC\vcvarsall.bat" x86 && cd ""%1"""
 HKCR,Drive\Shell\Cmdhere
 HKCR,Drive\Shell\Cmdhere,,,"%MENUITEM%"
-HKCR,Drive\Shell\Cmdhere\command,,,"%11%\cmd.exe /f:on /k cd ""%1"""
+HKCR,Drive\Shell\Cmdhere\command,,,"%11%\cmd.exe /f:on /k "C:\PROGRA~1\MICROS~1.0\VC\vcvarsall.bat" x86 && cd ""%1"""
 [Reg.Uninstall]
 HKLM,Software\Microsoft\Windows\CurrentVersion\Uninstall\%NAME%
 HKLM,Software\Microsoft\Windows\CurrentVersion\Uninstall\%NAME%,DisplayName\
